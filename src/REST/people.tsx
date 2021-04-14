@@ -7,13 +7,3 @@ export const getPeople = async (page: number) => {
             }
         )
 };
-
-export const getFilms = async ( params: number ) => {
-    return await fetch(`http://swapi.dev/api/films/${params}`)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                return result
-            }
-        )
-};

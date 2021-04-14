@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Container, Row, Button, Col} from 'reactstrap';
+import { Container, Row, Button, Col } from 'reactstrap';
 import { getPeople } from "../REST/people";
 import people from 'src/types/people';
 
@@ -10,6 +10,7 @@ interface State {
     isLoading: Boolean;
     data: people[];
     row?: {
+        films: string[];
         name: string;
         gender: string;
         birth_year: string;
@@ -20,7 +21,6 @@ interface State {
 
 export class Home extends React.Component<{}, State> {
     columns: any;
-    showDetailsRef: any;
     constructor(props: {}) {
         super(props);
         this.state={
@@ -29,7 +29,6 @@ export class Home extends React.Component<{}, State> {
 
             page: 1,
         }
-        this.showDetailsRef = React.createRef();
         this.columns = [
             {
                 dataField: 'name',
@@ -55,6 +54,21 @@ export class Home extends React.Component<{}, State> {
             })
         }
     }
+
+    getFilms = async () => {
+        if (this.state.row && this.state.row.films) {
+            let films = this.state.row.films
+            console.log(films);
+
+            let promiseArray = [];
+            for (let i = 0; i < films.length; i++) {
+                let request =  fetch(`{films[i]}`)
+                promiseArray.push(request)
+            }
+            await Promise.all(promiseArray)
+        }
+    }
+
     details = (): JSX.Element => {
         return (
             <div>
@@ -73,10 +87,11 @@ export class Home extends React.Component<{}, State> {
     }
 
     rowEvents = {
-        onClick: (e: any, row: any, rowIndex: number) => {
+        onClick: (e: any, row: any) => {
             this.setState({
                 row: row
             })
+            // await this.getFilms().then(r => console.log(r))
         }
     }
 
@@ -111,7 +126,6 @@ export class Home extends React.Component<{}, State> {
                 })
             }
         }
-
     }
 
     render() {
@@ -127,10 +141,11 @@ export class Home extends React.Component<{}, State> {
                 />
 
                 <Button onClick={() => this.handleChange('next')}> Next </Button>
-                { this.state.page >=2 ? <Button onClick={() => this.handleChange('back')}>Back</Button> : <></> }
+                {this.state.page >= 2 ? <Button onClick={() => this.handleChange('back')}>Back</Button> : <></>}
 
                 <br/>
                 <this.details/>
+
             </Container>
 
         );
