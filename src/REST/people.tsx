@@ -1,5 +1,5 @@
-export const getPeople = async () => {
-    return await fetch("http://swapi.dev/api/people/")
+export const getPeople = async (page: number) => {
+    return await fetch(`http://swapi.dev/api/people/?page=${page}`)
         .then(res => res.json())
         .then(
             (result) => {

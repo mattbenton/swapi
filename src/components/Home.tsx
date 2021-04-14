@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Container, Row, Button, Table, Col} from 'reactstrap';
+import {Container, Row, Button, Col} from 'reactstrap';
 import { getPeople } from "../REST/people";
-import BootstrapTable from 'react-bootstrap-table-next';
-// import paginationFactory from 'react-bootstrap-table2-paginator';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import people from 'src/types/people';
-// import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+
+import BootstrapTable from 'react-bootstrap-table-next';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 interface State {
     isLoading: Boolean;
@@ -15,6 +14,8 @@ interface State {
         gender: string;
         birth_year: string;
     }
+
+    page: number;
 }
 
 export class Home extends React.Component<{}, State> {
@@ -24,7 +25,9 @@ export class Home extends React.Component<{}, State> {
         super(props);
         this.state={
             isLoading: false,
-            data: []
+            data: [],
+
+            page: 1,
         }
         this.showDetailsRef = React.createRef();
         this.columns = [
@@ -44,7 +47,7 @@ export class Home extends React.Component<{}, State> {
     }
 
     componentDidMount = async() => {
-        let response = await getPeople();
+        let response = await getPeople(this.state.page);
         if (response) {
             response = response.results;
             this.setState({
@@ -53,9 +56,9 @@ export class Home extends React.Component<{}, State> {
         }
     }
     details = (): JSX.Element => {
-        console.log(this.state.row)
         return (
             <div>
+                <Row><Col>Details</Col></Row>
                 <Row>
                     <Col>Name: { this.state.row ? this.state.row.name : <></> }</Col>
                 </Row>
@@ -77,7 +80,42 @@ export class Home extends React.Component<{}, State> {
         }
     }
 
+    handleChange = async(direction: string) => {
+        if (direction === 'next') {
+            let page = this.state.page +1;
+            this.setState({
+                page: page,
+                isLoading: true
+            })
+            let response = await getPeople(page);
+            if (response) {
+                response = response.results;
+                this.setState({
+                    data: response,
+                    isLoading: false
+                })
+            }
+        }
+        if (direction === 'back') {
+            let page = this.state.page -1;
+            this.setState({
+                page: page,
+                isLoading: true
+            })
+            let response = await getPeople(page);
+            if (response) {
+                response = response.results;
+                this.setState({
+                    data: response,
+                    isLoading: false
+                })
+            }
+        }
+
+    }
+
     render() {
+
         return (
             <Container fluid id="main" className="flex-fill">
                 <BootstrapTable
@@ -86,7 +124,11 @@ export class Home extends React.Component<{}, State> {
                     data={this.state.data}
                     columns={this.columns}
                     rowEvents={this.rowEvents}
-                    />
+                />
+
+                <Button onClick={() => this.handleChange('next')}> Next </Button>
+                { this.state.page >=2 ? <Button onClick={() => this.handleChange('back')}>Back</Button> : <></> }
+
                 <br/>
                 <this.details/>
             </Container>
