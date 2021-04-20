@@ -5,6 +5,8 @@ import people from 'src/types/people';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+
 
 interface State {
     isLoading: Boolean;
@@ -32,7 +34,8 @@ export class Home extends React.Component<{}, State> {
         this.columns = [
             {
                 dataField: 'name',
-                text: 'Name'
+                text: 'Name',
+                filter: textFilter()
             },
             {
                 dataField: 'height',
@@ -150,6 +153,7 @@ export class Home extends React.Component<{}, State> {
                     columns={this.columns}
                     rowEvents={this.rowEvents}
                     defaultSorted={this.defaultSorted}
+                    filter={filterFactory()}
                 />
 
                 <Button onClick={() => this.handleChange('next')}> Next </Button>
