@@ -18,9 +18,9 @@ interface State {
 
     page: number;
 }
-
 export class Home extends React.Component<{}, State> {
     columns: any;
+    defaultSorted: any;
     constructor(props: {}) {
         super(props);
         this.state={
@@ -36,24 +36,34 @@ export class Home extends React.Component<{}, State> {
             },
             {
                 dataField: 'height',
-                text: 'Height'
+                text: 'Height',
+                sort: true,
             },
             {
                 dataField: 'mass',
                 text: 'Mass'
             }
         ]
+        this.defaultSorted = [{
+            dataField : 'height',
+            order : 'asc'
+        }]
     }
 
     componentDidMount = async() => {
         let response = await getPeople(this.state.page);
         if (response) {
             response = response.results;
+            // loop through response and make height a number so we can filter on it
+            for (let i = 0; i < response.length ; i++) {
+                response[i].height = parseInt(response[i].height)
+            }
             this.setState({
                 data: response
             })
         }
     }
+
     // loop through the films returned for each character and query
     getFilms = async () => {
         if (this.state.row && this.state.row.films) {
@@ -137,6 +147,7 @@ export class Home extends React.Component<{}, State> {
                     data={this.state.data}
                     columns={this.columns}
                     rowEvents={this.rowEvents}
+                    defaultSorted={this.defaultSorted}
                 />
 
                 <Button onClick={() => this.handleChange('next')}> Next </Button>
