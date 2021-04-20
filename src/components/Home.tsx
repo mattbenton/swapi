@@ -41,7 +41,8 @@ export class Home extends React.Component<{}, State> {
             },
             {
                 dataField: 'mass',
-                text: 'Mass'
+                text: 'Mass',
+                sort: true
             }
         ]
         this.defaultSorted = [{
@@ -54,9 +55,10 @@ export class Home extends React.Component<{}, State> {
         let response = await getPeople(this.state.page);
         if (response) {
             response = response.results;
-            // loop through response and make height a number so we can filter on it
+            // loop through response and make height/mass a number so we can sort on it
             for (let i = 0; i < response.length ; i++) {
                 response[i].height = parseInt(response[i].height)
+                response[i].mass = parseInt(response[i].mass)
             }
             this.setState({
                 data: response
