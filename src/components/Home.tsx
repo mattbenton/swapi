@@ -54,11 +54,10 @@ export class Home extends React.Component<{}, State> {
             })
         }
     }
-
+    // loop through the films returned for each character and query
     getFilms = async () => {
         if (this.state.row && this.state.row.films) {
             let films = this.state.row.films
-            console.log(films);
 
             let promiseArray = [];
             for (let i = 0; i < films.length; i++) {
@@ -68,7 +67,7 @@ export class Home extends React.Component<{}, State> {
             await Promise.all(promiseArray)
         }
     }
-
+    // pull the details of the character from state
     details = (): JSX.Element => {
         return (
             <div>
@@ -85,7 +84,7 @@ export class Home extends React.Component<{}, State> {
             </div>
         )
     }
-
+    // click on the row to get the character details
     rowEvents = {
         onClick: (e: any, row: any) => {
             this.setState({
@@ -94,7 +93,7 @@ export class Home extends React.Component<{}, State> {
             // await this.getFilms().then(r => console.log(r))
         }
     }
-
+    // page forward or back
     handleChange = async(direction: string) => {
         if (direction === 'next') {
             let page = this.state.page +1;
