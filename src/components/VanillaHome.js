@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Row, Button, Col, Table} from 'reactstrap';
+import { Button, Table} from 'reactstrap';
 import { getPeople } from "../REST/people";
 
 export class VanillaHome extends Component {
@@ -28,6 +28,7 @@ export class VanillaHome extends Component {
         }
     }
 
+    // pull data from state and put it in jsx so we can render it
     renderRow = () => {
         let data = this.state.data;
         return data.map((i, j) => {
@@ -81,6 +82,21 @@ export class VanillaHome extends Component {
         }
     }
 
+    sortBy = (order) => {
+        if (order === 'asc') {
+            let asc = this.state.data.sort((a,b) => (a.mass - b.mass))
+            this.setState({
+                data: asc
+            })
+        }
+        if (order === 'desc') {
+            let desc = this.state.data.sort((a,b) => (b.mass - a.mass))
+            this.setState({
+                data: desc
+            })
+        }
+    }
+
     render() {
         return (
             <div>
@@ -89,7 +105,7 @@ export class VanillaHome extends Component {
                         <tr>
                             <th>Name</th>
                             <th>Height</th>
-                            <th>Mass</th>
+                            <th>Mass <Button size="sm" onClick={() => {this.sortBy('asc')}}>▲</Button> / <Button size="sm" onClick={() => {this.sortBy('desc')}}>▼</Button></th>
                         </tr>
                     </thead>
                     <tbody>
