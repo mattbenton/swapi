@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table} from 'reactstrap';
+import {Button, Input, Table} from 'reactstrap';
 import { getPeople } from "../REST/people";
 
 export class VanillaHome extends Component {
@@ -8,8 +8,10 @@ export class VanillaHome extends Component {
         this.state = {
             isLoading: false,
             data: [],
+            filteredData: [],
 
             page: 1,
+            search: ''
         }
     }
 
@@ -97,11 +99,40 @@ export class VanillaHome extends Component {
         }
     }
 
+    handleSearch = (e) => {
+        let searchValue = e.target.value;
+        if (searchValue !== null && searchValue.length > 0) {
+            this.setState({
+                search: searchValue
+            })
+            let matchData = searchValue.trim().toLowerCase();
+            let newData = this.state.data.filter((e) => {return e.name.toLowerCase().match(matchData)})
+            console.log(newData);
+            return newData.map((i, j) => {
+                return(
+                    <tr>
+                        <td key={j}>
+                            {i.name}
+                        </td>
+                        <td key={j}>
+                            {i.height}
+                        </td>
+                        <td key={j}>
+                            {i.mass}
+                        </td>
+                    </tr>
+                )
+            })
+        }
+    }
+
     render() {
         return (
             <div>
                 <Table>
                     <thead>
+                    <Input placeholder="search names"
+                           onChange={(e) => this.handleSearch(e)} />
                         <tr>
                             <th>Name</th>
                             <th>Height</th>
@@ -109,7 +140,7 @@ export class VanillaHome extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                    {this.renderRow()}
+                    {this.state.search !== null && this.state.search.length ? this.handleSearch : this.renderRow()}
                     </tbody>
                     <Button onClick={() => this.handleChange('next')}> Next </Button>
                     {this.state.page >= 2 ? <Button onClick={() => this.handleChange('back')}>Back</Button> : <></>}
