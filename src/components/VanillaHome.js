@@ -33,16 +33,23 @@ export class VanillaHome extends Component {
     // pull data from state and put it in jsx so we can render it
     renderRow = () => {
         let data = this.state.data;
-        return data.map((i, j) => {
+        const search = this.state.search;
+        const filtered = data.filter(row => {
+            if (search) {
+                return row.name.indexOf(search) >= 0
+            }
+            return true
+        })
+        return filtered.map((i, j) => {
             return(
-                <tr>
-                    <td key={j}>
+                <tr key={j}>
+                    <td>
                         {i.name}
                     </td>
-                    <td key={j}>
+                    <td>
                         {i.height}
                     </td>
-                    <td key={j}>
+                    <td>
                         {i.mass}
                     </td>
                 </tr>
@@ -101,38 +108,39 @@ export class VanillaHome extends Component {
 
     handleSearch = (e) => {
         let searchValue = e.target.value;
-        if (searchValue !== null && searchValue.length > 0) {
-            this.setState({
-                search: searchValue
-            })
-            let matchData = searchValue.trim().toLowerCase();
-            let newData = this.state.data.filter((e) => {return e.name.toLowerCase().match(matchData)})
-            console.log(newData);
-            return newData.map((i, j) => {
-                return(
-                    <tr>
-                        <td key={j}>
-                            {i.name}
-                        </td>
-                        <td key={j}>
-                            {i.height}
-                        </td>
-                        <td key={j}>
-                            {i.mass}
-                        </td>
-                    </tr>
-                )
-            })
-        }
+        this.setState({
+            search: searchValue
+        })
+        // if (searchValue !== null && searchValue.length > 0) {
+            
+            // let matchData = searchValue.trim().toLowerCase();
+            // let newData = this.state.data.filter((e) => {return e.name.toLowerCase().match(matchData)})
+            // console.log(newData);
+            // return newData.map((i, j) => {
+            //     return(
+            //         <tr>
+            //             <td key={j}>
+            //                 {i.name}
+            //             </td>
+            //             <td key={j}>
+            //                 {i.height}
+            //             </td>
+            //             <td key={j}>
+            //                 {i.mass}
+            //             </td>
+            //         </tr>
+            //     )
+            // })
+        // }
     }
 
     render() {
         return (
             <div>
-                <Table>
-                    <thead>
                     <Input placeholder="search names"
                            onChange={(e) => this.handleSearch(e)} />
+                <Table>
+                    <thead>
                         <tr>
                             <th>Name</th>
                             <th>Height</th>
@@ -140,11 +148,12 @@ export class VanillaHome extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                    {this.state.search !== null && this.state.search.length ? this.handleSearch : this.renderRow()}
+                    {/* {this.state.search !== null && this.state.search.length ? this.handleSearch : this.renderRow()} */}
+                    {this.renderRow()}
                     </tbody>
+                </Table>
                     <Button onClick={() => this.handleChange('next')}> Next </Button>
                     {this.state.page >= 2 ? <Button onClick={() => this.handleChange('back')}>Back</Button> : <></>}
-                </Table>
             </div>
         );
     }
